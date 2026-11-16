@@ -1,0 +1,99 @@
+{
+  "name": "glidekit",
+  "version": "0.1.0",
+  "description": "Animated, accessible React components built with Tailwind CSS, Motion and Zag.js. Copy them into your app with one command.",
+  "license": "MIT",
+  "author": "Ricardo Menotti",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menottiRicardo/glidekit.git"
+  },
+  "homepage": "https://github.com/menottiRicardo/glidekit#readme",
+  "bugs": "https://github.com/menottiRicardo/glidekit/issues",
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "tailwindcss",
+    "motion",
+    "animation",
+    "zag",
+    "accessibility",
+    "registry",
+    "cli"
+  ],
+  "type": "module",
+  "bin": {
+    "glidekit": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && pnpm registry:build",
+    "registry:build": "tsx scripts/build-registry.ts",
+    "registry:check": "tsx scripts/build-registry.ts --check",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p examples/playground",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "example": "vite examples/playground",
+    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "commander": "15.0.0",
+    "picocolors": "1.1.1"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@tailwindcss/vite": "4.3.2",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/node": "22.20.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "@zag-js/accordion": "1.42.0",
+    "@zag-js/avatar": "1.42.0",
+    "@zag-js/checkbox": "1.42.0",
+    "@zag-js/combobox": "1.42.0",
+    "@zag-js/dialog": "1.42.0",
+    "@zag-js/menu": "1.42.0",
+    "@zag-js/popover": "1.42.0",
+    "@zag-js/progress": "1.42.0",
+    "@zag-js/radio-group": "1.42.0",
+    "@zag-js/react": "1.42.0",
+    "@zag-js/select": "1.42.0",
+    "@zag-js/slider": "1.42.0",
+    "@zag-js/switch": "1.42.0",
+    "@zag-js/tabs": "1.42.0",
+    "@zag-js/toast": "1.42.0",
+    "@zag-js/tooltip": "1.42.0",
+    "axe-core": "4.12.1",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "eslint": "10.6.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.7.0",
+    "jsdom": "29.1.1",
+    "motion": "12.42.2",
+    "prettier": "3.9.4",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "tailwind-merge": "3.6.0",
+    "tailwindcss": "4.3.2",
+    "tsup": "8.5.1",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.62.1",
+    "vite": "8.1.2",
+    "vitest": "4.1.9"
+  }
+}

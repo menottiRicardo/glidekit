@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
+    "paths": {
+      "@/lib/*": ["./registry/lib/*"],
+      "@/hooks/*": ["./registry/hooks/*"],
+      "@/components/ui/*": ["./registry/ui/*"]
+    }
+  },
+  "include": ["registry", "src", "test", "scripts", "tsup.config.ts", "vitest.config.ts"]
+}

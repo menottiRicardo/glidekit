@@ -1,0 +1,5 @@
+allowBuilds:
+  esbuild: true
+overrides:
+  framer-motion: 12.42.2
+  motion-dom: 12.42.2
