@@ -1,16 +1,15 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "label",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Label",
   "description": "Form field label.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json"
+    "cn"
   ],
   "files": [
     {
       "path": "registry/ui/label.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "import { cn } from '@/lib/cn';\nimport type { ComponentProps } from 'react';\n\nexport function Label({ className, ...props }: ComponentProps<'label'>) {\n  return (\n    <label\n      data-slot=\"label\"\n      className={cn(\n        'flex items-center gap-2 text-sm leading-none font-medium select-none',\n        'peer-disabled:cursor-not-allowed peer-disabled:opacity-50',\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n"
     }
   ]

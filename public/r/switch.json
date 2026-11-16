@@ -1,7 +1,6 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "switch",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Switch",
   "description": "On/off toggle with a springy thumb.",
   "dependencies": [
@@ -10,15 +9,15 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/motion.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/props.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-reduced-motion.json"
+    "cn",
+    "motion",
+    "props",
+    "use-reduced-motion"
   ],
   "files": [
     {
       "path": "registry/ui/switch.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "'use client';\n\nimport { cn } from '@/lib/cn';\nimport { transitions } from '@/lib/motion';\nimport { forMotion } from '@/lib/props';\nimport { useReducedMotion } from '@/hooks/use-reduced-motion';\nimport { normalizeProps, useMachine } from '@zag-js/react';\nimport * as zagSwitch from '@zag-js/switch';\nimport { motion } from 'motion/react';\nimport { useId, type ReactNode } from 'react';\n\nexport interface SwitchProps extends Omit<\n  zagSwitch.Props,\n  'id' | 'ids' | 'dir' | 'getRootNode' | 'label'\n> {\n  label?: ReactNode;\n  size?: 'sm' | 'md';\n  className?: string;\n}\n\nexport function Switch({ label, size = 'md', className, ...props }: SwitchProps) {\n  const service = useMachine(zagSwitch.machine, { id: useId(), ...props });\n  const api = zagSwitch.connect(service, normalizeProps);\n  const reduced = useReducedMotion();\n\n  return (\n    <label\n      data-slot=\"switch\"\n      {...api.getRootProps()}\n      className={cn(\n        'inline-flex items-center gap-2.5 text-sm data-disabled:cursor-not-allowed data-disabled:opacity-50',\n        className,\n      )}\n    >\n      <input {...api.getHiddenInputProps()} role=\"switch\" />\n      <span\n        {...api.getControlProps()}\n        className={cn(\n          'flex shrink-0 items-center rounded-full p-0.5 transition-colors',\n          'bg-input data-[state=checked]:bg-primary',\n          'data-[state=checked]:justify-end data-[state=unchecked]:justify-start',\n          'data-focus-visible:ring-[3px] data-focus-visible:ring-ring/40',\n          size === 'sm' ? 'h-5 w-9' : 'h-6 w-11',\n        )}\n      >\n        <motion.span\n          {...forMotion(api.getThumbProps())}\n          layout={!reduced}\n          transition={transitions.bouncy}\n          className={cn(\n            'block rounded-full bg-background shadow-sm',\n            size === 'sm' ? 'size-4' : 'size-5',\n          )}\n        />\n      </span>\n      {label && <span {...api.getLabelProps()}>{label}</span>}\n    </label>\n  );\n}\n"
     }
   ]

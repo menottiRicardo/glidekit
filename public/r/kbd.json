@@ -1,16 +1,15 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "kbd",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Kbd",
   "description": "Keyboard key hint.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json"
+    "cn"
   ],
   "files": [
     {
       "path": "registry/ui/kbd.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "import { cn } from '@/lib/cn';\nimport type { ComponentProps } from 'react';\n\nexport function Kbd({ className, ...props }: ComponentProps<'kbd'>) {\n  return (\n    <kbd\n      data-slot=\"kbd\"\n      className={cn(\n        'pointer-events-none inline-flex h-5 min-w-5 items-center justify-center gap-1 rounded border',\n        'border-b-2 bg-muted px-1 font-sans text-[11px] font-medium text-muted-foreground select-none',\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n"
     }
   ]

@@ -1,7 +1,6 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "drawer",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Drawer",
   "description": "Edge panel that slides in and can be dragged to close.",
   "dependencies": [
@@ -9,17 +8,17 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/dialog.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/motion.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/props.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-preset.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-reduced-motion.json"
+    "cn",
+    "dialog",
+    "motion",
+    "props",
+    "use-preset",
+    "use-reduced-motion"
   ],
   "files": [
     {
       "path": "registry/ui/drawer.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "'use client';\n\nimport { cn } from '@/lib/cn';\nimport { slideFrom, type Side } from '@/lib/motion';\nimport { forMotion } from '@/lib/props';\nimport { usePreset } from '@/hooks/use-preset';\nimport { useReducedMotion } from '@/hooks/use-reduced-motion';\nimport {\n  Dialog,\n  DialogBackdrop,\n  DialogClose,\n  DialogDescription,\n  DialogTitle,\n  DialogTrigger,\n  useDialog,\n} from '@/components/ui/dialog';\nimport { Portal } from '@zag-js/react';\nimport { AnimatePresence, motion, type PanInfo } from 'motion/react';\nimport type { ComponentProps, ReactNode } from 'react';\n\nexport {\n  Dialog as Drawer,\n  DialogTrigger as DrawerTrigger,\n  DialogTitle as DrawerTitle,\n  DialogDescription as DrawerDescription,\n  DialogClose as DrawerClose,\n};\n\nconst placement: Record<Side, string> = {\n  bottom: 'items-end justify-center',\n  top: 'items-start justify-center',\n  left: 'items-stretch justify-start',\n  right: 'items-stretch justify-end',\n};\n\nconst panel: Record<Side, string> = {\n  bottom: 'w-full max-h-[85vh] rounded-t-2xl border-t',\n  top: 'w-full max-h-[85vh] rounded-b-2xl border-b',\n  left: 'h-full w-[min(380px,90vw)] border-r',\n  right: 'h-full w-[min(380px,90vw)] border-l',\n};\n\n/** Distance (px) or speed (px/s) past which releasing a drag closes the drawer. */\nconst CLOSE_DISTANCE = 100;\nconst CLOSE_VELOCITY = 500;\n\nexport function shouldClose(side: Side, info: Pick<PanInfo, 'offset' | 'velocity'>): boolean {\n  const horizontal = side === 'left' || side === 'right';\n  const sign = side === 'right' || side === 'bottom' ? 1 : -1;\n  const offset = (horizontal ? info.offset.x : info.offset.y) * sign;\n  const velocity = (horizontal ? info.velocity.x : info.velocity.y) * sign;\n  return offset > CLOSE_DISTANCE || velocity > CLOSE_VELOCITY;\n}\n\nexport interface DrawerContentProps {\n  children: ReactNode;\n  side?: Side;\n  className?: string;\n  /** Let users drag the panel toward its edge to close it. */\n  draggable?: boolean;\n}\n\nexport function DrawerContent({\n  children,\n  side = 'bottom',\n  className,\n  draggable = true,\n}: DrawerContentProps) {\n  const api = useDialog();\n  const preset = usePreset(slideFrom(side));\n  const reduced = useReducedMotion();\n  const horizontal = side === 'left' || side === 'right';\n  const canDrag = draggable && !reduced;\n\n  return (\n    <Portal>\n      <DialogBackdrop />\n      <div {...api.getPositionerProps()} className={cn('fixed inset-0 z-50 flex', placement[side])}>\n        <AnimatePresence>\n          {api.open && (\n            <motion.div\n              data-slot=\"drawer-content\"\n              data-side={side}\n              {...forMotion(api.getContentProps())}\n              {...preset}\n              drag={canDrag ? (horizontal ? 'x' : 'y') : false}\n              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}\n              dragElastic={{\n                top: side === 'top' ? 0.6 : 0.05,\n                bottom: side === 'bottom' ? 0.6 : 0.05,\n                left: side === 'left' ? 0.6 : 0.05,\n                right: side === 'right' ? 0.6 : 0.05,\n              }}\n              onDragEnd={(_, info) => {\n                if (shouldClose(side, info)) api.setOpen(false);\n              }}\n              className={cn(\n                'relative flex flex-col gap-4 overflow-y-auto bg-background p-6 shadow-xl outline-none',\n                panel[side],\n                className,\n              )}\n            >\n              {side === 'bottom' && canDrag && (\n                <div\n                  aria-hidden\n                  className=\"mx-auto -mt-2 mb-1 h-1.5 w-10 shrink-0 cursor-grab rounded-full bg-muted active:cursor-grabbing\"\n                />\n              )}\n              {children}\n            </motion.div>\n          )}\n        </AnimatePresence>\n      </div>\n    </Portal>\n  );\n}\n\nexport function DrawerHeader({ className, ...props }: ComponentProps<'div'>) {\n  return <div className={cn('grid gap-1.5', className)} {...props} />;\n}\n\nexport function DrawerFooter({ className, ...props }: ComponentProps<'div'>) {\n  return <div className={cn('mt-auto flex flex-col gap-2', className)} {...props} />;\n}\n"
     }
   ]

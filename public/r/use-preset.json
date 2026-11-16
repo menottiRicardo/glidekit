@@ -1,17 +1,16 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "use-preset",
-  "type": "registry:hook",
+  "type": "hook",
   "title": "usePreset",
   "description": "Reduced-motion aware animation presets.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/motion.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-reduced-motion.json"
+    "motion",
+    "use-reduced-motion"
   ],
   "files": [
     {
       "path": "registry/hooks/use-preset.ts",
-      "type": "registry:hook",
+      "type": "hook",
       "content": "import { reduce, type MotionPreset } from '@/lib/motion';\nimport { useReducedMotion } from '@/hooks/use-reduced-motion';\n\n/** Returns the preset, or an opacity-only version when the user prefers reduced motion. */\nexport function usePreset(preset: MotionPreset): MotionPreset {\n  const reduced = useReducedMotion();\n  return reduced ? reduce(preset) : preset;\n}\n"
     }
   ]

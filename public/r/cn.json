@@ -1,7 +1,6 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "cn",
-  "type": "registry:lib",
+  "type": "lib",
   "title": "cn",
   "description": "Class name helper that merges Tailwind utilities.",
   "dependencies": [
@@ -11,7 +10,7 @@
   "files": [
     {
       "path": "registry/lib/cn.ts",
-      "type": "registry:lib",
+      "type": "lib",
       "content": "import { clsx, type ClassValue } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\n/** Joins class names and lets later Tailwind utilities win over earlier ones. */\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs));\n}\n"
     }
   ]

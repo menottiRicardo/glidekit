@@ -37,13 +37,13 @@ export interface AddResult {
 export function targetPath(config: Config, file: RegistryFile, override?: string): string {
   const name = file.path.split('/').pop()!;
   switch (file.type) {
-    case 'registry:ui':
+    case 'ui':
       return join(override ?? config.paths.ui, name);
-    case 'registry:lib':
+    case 'lib':
       return join(config.paths.lib, name);
-    case 'registry:hook':
+    case 'hook':
       return join(config.paths.hooks, name);
-    case 'registry:style':
+    case 'style':
       return join(dirname(config.css), file.target ?? name);
   }
 }
@@ -60,7 +60,7 @@ export async function writeItems(
 
   for (const item of items) {
     for (const file of item.files) {
-      const rel = targetPath(config, file, item.type === 'registry:ui' ? options.path : undefined);
+      const rel = targetPath(config, file, item.type === 'ui' ? options.path : undefined);
       const abs = join(options.cwd, rel);
       const content = rewriteImports(file.content ?? '', config.aliases);
 

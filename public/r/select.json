@@ -1,7 +1,6 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "select",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Select",
   "description": "Pick one option from a floating list.",
   "dependencies": [
@@ -10,16 +9,16 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/motion.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/props.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/recipes.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-reduced-motion.json"
+    "cn",
+    "motion",
+    "props",
+    "recipes",
+    "use-reduced-motion"
   ],
   "files": [
     {
       "path": "registry/ui/select.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "'use client';\n\nimport { cn } from '@/lib/cn';\nimport { transitions } from '@/lib/motion';\nimport { forMotion } from '@/lib/props';\nimport { fieldBase, floatingSurface, menuItem } from '@/lib/recipes';\nimport { useReducedMotion } from '@/hooks/use-reduced-motion';\nimport { normalizeProps, Portal, useMachine } from '@zag-js/react';\nimport * as select from '@zag-js/select';\nimport { AnimatePresence, motion, type Variants } from 'motion/react';\nimport { useId, useMemo, type ReactNode } from 'react';\n\nexport interface SelectItem {\n  label: string;\n  value: string;\n  disabled?: boolean;\n}\n\nexport interface SelectProps {\n  items: SelectItem[];\n  label?: ReactNode;\n  placeholder?: string;\n  value?: string | null;\n  defaultValue?: string | null;\n  onValueChange?: (value: string | null) => void;\n  name?: string;\n  disabled?: boolean;\n  invalid?: boolean;\n  required?: boolean;\n  className?: string;\n}\n\nconst list: Variants = {\n  closed: { opacity: 0, scale: 0.96, transition: { duration: 0.1 } },\n  open: { opacity: 1, scale: 1, transition: { ...transitions.snappy, staggerChildren: 0.02 } },\n};\nconst option: Variants = {\n  closed: { opacity: 0, x: -4 },\n  open: { opacity: 1, x: 0, transition: transitions.snappy },\n};\nconst reducedVariants: Variants = { closed: { opacity: 0 }, open: { opacity: 1 } };\n\nconst toArray = (value: string | null | undefined) =>\n  value === undefined ? undefined : value === null ? [] : [value];\n\nexport function Select({\n  items,\n  label,\n  placeholder = 'Select…',\n  value,\n  defaultValue,\n  onValueChange,\n  className,\n  ...props\n}: SelectProps) {\n  const collection = useMemo(() => select.collection({ items }), [items]);\n  const service = useMachine(select.machine, {\n    id: useId(),\n    collection,\n    value: toArray(value),\n    defaultValue: toArray(defaultValue),\n    onValueChange: (details) => onValueChange?.(details.value[0] ?? null),\n    positioning: { sameWidth: true, gutter: 6 },\n    ...props,\n  });\n  const api = select.connect(service, normalizeProps);\n  const reduced = useReducedMotion();\n\n  return (\n    <div data-slot=\"select\" {...api.getRootProps()} className={cn('grid w-full gap-2', className)}>\n      {label && (\n        <label {...api.getLabelProps()} className=\"text-sm font-medium\">\n          {label}\n        </label>\n      )}\n      <div {...api.getControlProps()}>\n        <button\n          {...api.getTriggerProps()}\n          className={cn(\n            fieldBase,\n            'flex h-9 items-center justify-between gap-2 text-left data-placeholder-shown:text-muted-foreground',\n          )}\n        >\n          <span {...api.getValueTextProps()} className=\"truncate\">\n            {api.valueAsString || placeholder}\n          </span>\n          <motion.span\n            {...forMotion(api.getIndicatorProps())}\n            className=\"flex shrink-0 opacity-60\"\n            animate={{ rotate: api.open ? 180 : 0 }}\n            transition={transitions.snappy}\n          >\n            <svg viewBox=\"0 0 16 16\" className=\"size-4\" aria-hidden>\n              <path d=\"M4 6l4 4 4-4\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.6\" />\n            </svg>\n          </motion.span>\n        </button>\n      </div>\n      <Portal>\n        <div {...api.getPositionerProps()}>\n          <AnimatePresence>\n            {api.open && (\n              <motion.div\n                {...forMotion(api.getContentProps())}\n                variants={reduced ? reducedVariants : list}\n                initial=\"closed\"\n                animate=\"open\"\n                exit=\"closed\"\n                style={{ transformOrigin: 'var(--transform-origin)' }}\n                className={cn(floatingSurface, 'max-h-72 overflow-y-auto p-1')}\n              >\n                {collection.items.map((item) => (\n                  <motion.div\n                    key={item.value}\n                    {...forMotion(api.getItemProps({ item }))}\n                    variants={reduced ? reducedVariants : option}\n                    className={cn(menuItem, 'pr-8')}\n                  >\n                    <span {...api.getItemTextProps({ item })}>{item.label}</span>\n                    <span\n                      {...api.getItemIndicatorProps({ item })}\n                      className=\"absolute right-2 flex items-center\"\n                    >\n                      <CheckIcon />\n                    </span>\n                  </motion.div>\n                ))}\n              </motion.div>\n            )}\n          </AnimatePresence>\n        </div>\n      </Portal>\n      <select {...api.getHiddenSelectProps()}>\n        <option value=\"\" />\n        {collection.items.map((item) => (\n          <option key={item.value} value={item.value}>\n            {item.label}\n          </option>\n        ))}\n      </select>\n    </div>\n  );\n}\n\nfunction CheckIcon() {\n  return (\n    <svg viewBox=\"0 0 16 16\" fill=\"none\" className=\"size-4\" aria-hidden>\n      <path d=\"M3.5 8.5l3 3 6-7\" stroke=\"currentColor\" strokeWidth=\"1.8\" strokeLinecap=\"round\" />\n    </svg>\n  );\n}\n"
     }
   ]

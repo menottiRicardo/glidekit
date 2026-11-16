@@ -1,7 +1,6 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "slot",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Slot",
   "description": "Merges props into a child element (asChild).",
   "dependencies": [
@@ -10,7 +9,7 @@
   "files": [
     {
       "path": "registry/ui/slot.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "import { mergeProps } from '@zag-js/react';\nimport { cloneElement, isValidElement, type HTMLAttributes, type ReactNode } from 'react';\n\nexport interface SlotProps extends HTMLAttributes<HTMLElement> {\n  children?: ReactNode;\n}\n\n/**\n * Renders its only child with the slot's props merged in (event handlers are\n * chained, class names joined). Powers the `asChild` prop on triggers.\n */\nexport function Slot({ children, ...props }: SlotProps) {\n  if (!isValidElement<Record<string, unknown>>(children)) return null;\n  return cloneElement(children, mergeProps(props, children.props));\n}\n"
     }
   ]

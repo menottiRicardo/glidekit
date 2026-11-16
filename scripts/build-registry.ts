@@ -1,7 +1,7 @@
 /**
  * Builds the component registry from the source in registry/.
  *
- *   registry.json      index in the shadcn registry schema
+ *   public/r/index.json   every item without file contents (used by `glidekit list`)
  *   public/r/<name>.json  one item per component, with file contents inlined
  *
  * npm dependencies and registry dependencies are read from each file's imports,
@@ -12,15 +12,12 @@ import { basename, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { meta } from './registry-meta';
 
-export const REGISTRY_URL =
-  'https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r';
-
 const root = fileURLToPath(new URL('..', import.meta.url));
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
   devDependencies: Record<string, string>;
 };
 
-type ItemType = 'registry:ui' | 'registry:lib' | 'registry:hook' | 'registry:style';
+type ItemType = 'ui' | 'lib' | 'hook' | 'style';
 
 interface RegistryFile {
   path: string;
@@ -30,7 +27,6 @@ interface RegistryFile {
 }
 
 export interface RegistryItem {
-  $schema?: string;
   name: string;
   type: ItemType;
   title: string;
@@ -41,9 +37,9 @@ export interface RegistryItem {
 }
 
 const SOURCES: { dir: string; type: ItemType }[] = [
-  { dir: 'registry/lib', type: 'registry:lib' },
-  { dir: 'registry/hooks', type: 'registry:hook' },
-  { dir: 'registry/ui', type: 'registry:ui' },
+  { dir: 'registry/lib', type: 'lib' },
+  { dir: 'registry/hooks', type: 'hook' },
+  { dir: 'registry/ui', type: 'ui' },
 ];
 
 const IMPORT = /^\s*import\s+(?:type\s+)?(?:[\s\S]*?\s+from\s+)?['"]([^'"]+)['"]/gm;
@@ -102,12 +98,12 @@ export function buildItems(): RegistryItem[] {
   }
   items.push({
     name: 'theme',
-    type: 'registry:style',
+    type: 'style',
     ...describe('theme'),
     files: [
       {
         path: 'registry/theme/theme.css',
-        type: 'registry:style',
+        type: 'style',
         target: 'glidekit.css',
         content: readFileSync(join(root, 'registry/theme/theme.css'), 'utf8'),
       },
@@ -130,7 +126,6 @@ function stringify(value: unknown): string {
 export function render(items: RegistryItem[]): Map<string, string> {
   const out = new Map<string, string>();
   const index = {
-    $schema: 'https://ui.shadcn.com/schema/registry.json',
     name: 'glidekit',
     homepage: 'https://github.com/menottiRicardo/glidekit',
     items: items.map(({ files, ...item }) => ({
@@ -138,25 +133,8 @@ export function render(items: RegistryItem[]): Map<string, string> {
       files: files.map(({ content: _content, ...file }) => file),
     })),
   };
-  out.set('registry.json', stringify(index));
   out.set('public/r/index.json', stringify(index));
-  for (const item of items) {
-    out.set(
-      `public/r/${item.name}.json`,
-      stringify({
-        $schema: 'https://ui.shadcn.com/schema/registry-item.json',
-        ...item,
-        // Full URLs so `npx shadcn add <url>` can resolve dependencies too.
-        ...(item.registryDependencies
-          ? {
-              registryDependencies: item.registryDependencies.map(
-                (dep) => `${REGISTRY_URL}/${dep}.json`,
-              ),
-            }
-          : {}),
-      }),
-    );
-  }
+  for (const item of items) out.set(`public/r/${item.name}.json`, stringify(item));
   return out;
 }
 
@@ -178,7 +156,7 @@ function main() {
     console.error(`Registry is out of date. Run \`pnpm registry:build\`.\n  ${stale.join('\n  ')}`);
     process.exit(1);
   }
-  console.log(check ? 'Registry is up to date.' : `Registry built: ${outputs.size - 2} items.`);
+  console.log(check ? 'Registry is up to date.' : `Registry built: ${outputs.size - 1} items.`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main();

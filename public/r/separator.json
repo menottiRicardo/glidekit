@@ -1,16 +1,15 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "separator",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Separator",
   "description": "Horizontal or vertical divider.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json"
+    "cn"
   ],
   "files": [
     {
       "path": "registry/ui/separator.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "import { cn } from '@/lib/cn';\nimport type { ComponentProps } from 'react';\n\nexport interface SeparatorProps extends ComponentProps<'div'> {\n  orientation?: 'horizontal' | 'vertical';\n  /** Purely visual separators are hidden from assistive technology. */\n  decorative?: boolean;\n}\n\nexport function Separator({\n  className,\n  orientation = 'horizontal',\n  decorative = true,\n  ...props\n}: SeparatorProps) {\n  return (\n    <div\n      data-slot=\"separator\"\n      data-orientation={orientation}\n      role={decorative ? 'none' : 'separator'}\n      aria-orientation={decorative ? undefined : orientation}\n      className={cn(\n        'shrink-0 bg-border',\n        orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px self-stretch',\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n"
     }
   ]

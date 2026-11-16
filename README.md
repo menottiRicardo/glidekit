@@ -50,12 +50,6 @@ export function Example() {
 }
 ```
 
-Already using the shadcn CLI? Every component is published in the same registry format:
-
-```bash
-npx shadcn@latest add https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/dialog.json
-```
-
 ## Components
 
 | Group      | Components                                                                              |

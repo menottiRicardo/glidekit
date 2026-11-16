@@ -1,17 +1,16 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "input",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Input",
   "description": "Text field.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/recipes.json"
+    "cn",
+    "recipes"
   ],
   "files": [
     {
       "path": "registry/ui/input.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "import { cn } from '@/lib/cn';\nimport { inputVariants, type InputVariants } from '@/lib/recipes';\nimport type { ComponentProps } from 'react';\n\nexport interface InputProps extends Omit<ComponentProps<'input'>, 'size'>, InputVariants {}\n\nexport function Input({ className, size, type = 'text', ...props }: InputProps) {\n  return (\n    <input\n      type={type}\n      data-slot=\"input\"\n      className={cn(\n        inputVariants({ size }),\n        'file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium',\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n"
     }
   ]

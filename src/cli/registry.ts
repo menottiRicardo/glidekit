@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { isAbsolute, join, resolve } from 'node:path';
 
-export type ItemType = 'registry:ui' | 'registry:lib' | 'registry:hook' | 'registry:style';
+export type ItemType = 'ui' | 'lib' | 'hook' | 'style';
 
 export interface RegistryFile {
   path: string;

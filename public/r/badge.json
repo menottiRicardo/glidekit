@@ -1,17 +1,16 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "badge",
-  "type": "registry:ui",
+  "type": "ui",
   "title": "Badge",
   "description": "Small status label.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
-    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/recipes.json"
+    "cn",
+    "recipes"
   ],
   "files": [
     {
       "path": "registry/ui/badge.tsx",
-      "type": "registry:ui",
+      "type": "ui",
       "content": "import { cn } from '@/lib/cn';\nimport { badgeVariants, type BadgeVariants } from '@/lib/recipes';\nimport type { ComponentProps } from 'react';\n\nexport interface BadgeProps extends ComponentProps<'span'>, BadgeVariants {}\n\nexport function Badge({ className, variant, ...props }: BadgeProps) {\n  return (\n    <span data-slot=\"badge\" className={cn(badgeVariants({ variant }), className)} {...props} />\n  );\n}\n\nexport { badgeVariants };\n"
     }
   ]

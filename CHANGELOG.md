@@ -8,5 +8,5 @@ First release.
   Dialog, Drawer, Dropdown Menu, Input, Kbd, Label, Popover, Progress, Radio Group, Select,
   Separator, Skeleton, Slider, Switch, Tabs, Text Reveal, Textarea, Toast and Tooltip.
 - `glidekit` CLI with `init`, `add`, `list` and `diff`.
-- Registry published in the shadcn registry format under `public/r`.
+- Component registry published under `public/r`.
 - Theme tokens for light and dark mode, and reduced-motion support throughout.
