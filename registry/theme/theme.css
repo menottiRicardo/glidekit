@@ -1,0 +1,147 @@
+/*
+ * glidekit theme
+ * Import after Tailwind:  @import "tailwindcss";  @import "./glidekit.css";
+ * Every color is a CSS variable, so restyling means overriding :root / .dark.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0.005 285);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.005 285);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.005 285);
+  --primary: oklch(0.52 0.21 275);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.003 265);
+  --secondary-foreground: oklch(0.21 0.006 285);
+  --muted: oklch(0.967 0.003 265);
+  --muted-foreground: oklch(0.5 0.016 286);
+  --accent: oklch(0.955 0.02 275);
+  --accent-foreground: oklch(0.3 0.12 275);
+  --destructive: oklch(0.577 0.245 27.3);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.6 0.15 155);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.77 0.16 75);
+  --warning-foreground: oklch(0.25 0.06 75);
+  --border: oklch(0.92 0.004 286);
+  --input: oklch(0.88 0.006 286);
+  --ring: oklch(0.52 0.21 275);
+}
+
+.dark {
+  --background: oklch(0.16 0.006 285);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.2 0.006 285);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.68 0.17 275);
+  --primary-foreground: oklch(0.16 0.03 275);
+  --secondary: oklch(0.27 0.006 286);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.27 0.006 286);
+  --muted-foreground: oklch(0.72 0.015 286);
+  --accent: oklch(0.3 0.05 275);
+  --accent-foreground: oklch(0.93 0.04 275);
+  --destructive: oklch(0.65 0.21 22);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.7 0.15 155);
+  --success-foreground: oklch(0.16 0.03 155);
+  --warning: oklch(0.8 0.15 80);
+  --warning-foreground: oklch(0.2 0.05 80);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.68 0.17 275);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --animate-shimmer: glidekit-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes glidekit-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+/* Toast stacking. Position, scale and opacity come from the toast machine as CSS variables. */
+@layer components {
+  [data-scope='toast'][data-part='root'] {
+    translate: var(--x) var(--y);
+    scale: var(--scale);
+    z-index: var(--z-index);
+    height: var(--height);
+    opacity: var(--opacity);
+    will-change: translate, opacity, scale;
+    transition:
+      translate 400ms,
+      scale 400ms,
+      opacity 400ms,
+      height 400ms,
+      box-shadow 200ms;
+    transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
+  }
+
+  [data-scope='toast'][data-part='root'][data-state='closed'] {
+    transition:
+      translate 400ms,
+      scale 400ms,
+      opacity 200ms;
+    transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-scope='toast'][data-part='root'],
+    [data-scope='toast'][data-part='root'][data-state='closed'] {
+      transition: opacity 150ms linear;
+    }
+  }
+}
