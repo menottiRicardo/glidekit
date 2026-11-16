@@ -1,0 +1,65 @@
+/** Titles and descriptions for every registry item. Files and dependencies are derived from source. */
+export const meta: Record<string, { title: string; description: string }> = {
+  cn: { title: 'cn', description: 'Class name helper that merges Tailwind utilities.' },
+  motion: { title: 'Motion presets', description: 'Shared springs and enter/exit presets.' },
+  props: {
+    title: 'Prop helpers',
+    description: 'Makes behavior props safe to spread on motion elements.',
+  },
+  recipes: { title: 'Recipes', description: 'Class variant recipes used by the components.' },
+  'use-preset': { title: 'usePreset', description: 'Reduced-motion aware animation presets.' },
+  'use-reduced-motion': {
+    title: 'useReducedMotion',
+    description: 'Reduced-motion check that respects MotionConfig.',
+  },
+  theme: {
+    title: 'Theme',
+    description: 'Color tokens, radius scale and keyframes for Tailwind v4.',
+  },
+  accordion: {
+    title: 'Accordion',
+    description: 'Stacked sections that expand with a height animation.',
+  },
+  'animated-number': {
+    title: 'Animated Number',
+    description: 'A number that counts smoothly to its value.',
+  },
+  avatar: {
+    title: 'Avatar',
+    description: 'Image with an initials fallback and an overflow group.',
+  },
+  badge: { title: 'Badge', description: 'Small status label.' },
+  button: { title: 'Button', description: 'Button with press feedback and a loading state.' },
+  card: { title: 'Card', description: 'Surface for grouped content, optionally lifting on hover.' },
+  checkbox: {
+    title: 'Checkbox',
+    description: 'Checkbox with a drawn check and indeterminate state.',
+  },
+  combobox: { title: 'Combobox', description: 'Searchable select with live filtering.' },
+  dialog: { title: 'Dialog', description: 'Modal window that scales in over a blurred backdrop.' },
+  drawer: {
+    title: 'Drawer',
+    description: 'Edge panel that slides in and can be dragged to close.',
+  },
+  'dropdown-menu': { title: 'Dropdown Menu', description: 'Menu of actions with staggered items.' },
+  input: { title: 'Input', description: 'Text field.' },
+  kbd: { title: 'Kbd', description: 'Keyboard key hint.' },
+  label: { title: 'Label', description: 'Form field label.' },
+  popover: { title: 'Popover', description: 'Floating panel anchored to a trigger.' },
+  progress: {
+    title: 'Progress',
+    description: 'Progress bar with a spring fill and indeterminate mode.',
+  },
+  'radio-group': { title: 'Radio Group', description: 'Single choice from a set of options.' },
+  select: { title: 'Select', description: 'Pick one option from a floating list.' },
+  separator: { title: 'Separator', description: 'Horizontal or vertical divider.' },
+  skeleton: { title: 'Skeleton', description: 'Shimmering loading placeholder.' },
+  slider: { title: 'Slider', description: 'Single or range slider with a value bubble.' },
+  slot: { title: 'Slot', description: 'Merges props into a child element (asChild).' },
+  switch: { title: 'Switch', description: 'On/off toggle with a springy thumb.' },
+  tabs: { title: 'Tabs', description: 'Tabbed panels with a sliding indicator.' },
+  'text-reveal': { title: 'Text Reveal', description: 'Text that blurs into place word by word.' },
+  textarea: { title: 'Textarea', description: 'Multi-line field that grows with its content.' },
+  toast: { title: 'Toast', description: 'Stacked notifications with a global toaster.' },
+  tooltip: { title: 'Tooltip', description: 'Short hint shown on hover or focus.' },
+};

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:ui",
+  "title": "Tooltip",
+  "description": "Short hint shown on hover or focus.",
+  "dependencies": [
+    "@zag-js/react@^1.42.0",
+    "@zag-js/tooltip@^1.42.0",
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/motion.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/props.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/slot.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-preset.json"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/tooltip.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { cn } from '@/lib/cn';\nimport { popIn } from '@/lib/motion';\nimport { forMotion } from '@/lib/props';\nimport { usePreset } from '@/hooks/use-preset';\nimport { Slot } from '@/components/ui/slot';\nimport { normalizeProps, Portal, useMachine } from '@zag-js/react';\nimport * as tooltip from '@zag-js/tooltip';\nimport { AnimatePresence, motion } from 'motion/react';\nimport { useId, type ReactElement, type ReactNode } from 'react';\n\nexport interface TooltipProps extends Omit<tooltip.Props, 'id' | 'ids' | 'dir' | 'getRootNode'> {\n  /** What the tooltip says. */\n  content: ReactNode;\n  /** The element that triggers the tooltip. Must accept props and a ref. */\n  children: ReactElement;\n  side?: 'top' | 'right' | 'bottom' | 'left';\n  className?: string;\n}\n\nexport function Tooltip({\n  content,\n  children,\n  side = 'top',\n  className,\n  positioning,\n  openDelay = 400,\n  closeDelay = 100,\n  ...props\n}: TooltipProps) {\n  const service = useMachine(tooltip.machine, {\n    id: useId(),\n    openDelay,\n    closeDelay,\n    positioning: { placement: side, gutter: 6, ...positioning },\n    ...props,\n  });\n  const api = tooltip.connect(service, normalizeProps);\n  const preset = usePreset(popIn);\n\n  return (\n    <>\n      <Slot {...api.getTriggerProps()}>{children}</Slot>\n      <Portal>\n        <div {...api.getPositionerProps()}>\n          <AnimatePresence>\n            {api.open && (\n              <motion.div\n                data-slot=\"tooltip-content\"\n                {...forMotion(api.getContentProps())}\n                {...preset}\n                style={{ transformOrigin: 'var(--transform-origin)' }}\n                className={cn(\n                  'z-50 max-w-xs rounded-md bg-foreground px-2.5 py-1.5 text-xs text-background shadow-md',\n                  className,\n                )}\n              >\n                {content}\n              </motion.div>\n            )}\n          </AnimatePresence>\n        </div>\n      </Portal>\n    </>\n  );\n}\n"
+    }
+  ]
+}

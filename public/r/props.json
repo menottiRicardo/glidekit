@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "props",
+  "type": "registry:lib",
+  "title": "Prop helpers",
+  "description": "Makes behavior props safe to spread on motion elements.",
+  "files": [
+    {
+      "path": "registry/lib/props.ts",
+      "type": "registry:lib",
+      "content": "/**\n * Event handlers whose names clash between DOM attributes and motion's\n * gesture/animation callbacks. Behavior props never set these, so dropping them\n * lets machine props be spread onto motion elements with correct types.\n */\nconst CONFLICTING = [\n  'onAnimationStart',\n  'onAnimationEnd',\n  'onAnimationIteration',\n  'onDrag',\n  'onDragStart',\n  'onDragEnd',\n  'onDragEnter',\n  'onDragExit',\n  'onDragLeave',\n  'onDragOver',\n  'onDrop',\n] as const;\n\ntype Conflicting = (typeof CONFLICTING)[number];\n\nexport function forMotion<T extends object>(props: T): Omit<T, Conflicting> {\n  const copy = { ...props } as Record<string, unknown>;\n  for (const key of CONFLICTING) delete copy[key];\n  return copy as Omit<T, Conflicting>;\n}\n"
+    }
+  ]
+}

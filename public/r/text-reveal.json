@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "text-reveal",
+  "type": "registry:ui",
+  "title": "Text Reveal",
+  "description": "Text that blurs into place word by word.",
+  "dependencies": [
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-reduced-motion.json"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/text-reveal.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { motion, type Variants } from 'motion/react';\nimport type { ElementType } from 'react';\nimport { useReducedMotion } from '@/hooks/use-reduced-motion';\n\nexport interface TextRevealProps {\n  text: string;\n  /** Reveal word by word or letter by letter. */\n  by?: 'word' | 'letter';\n  /** Element to render, e.g. \"h1\". */\n  as?: ElementType;\n  /** Seconds between pieces. */\n  stagger?: number;\n  delay?: number;\n  /** Replay whenever it re-enters the viewport. */\n  repeat?: boolean;\n  className?: string;\n}\n\nexport function splitText(text: string, by: 'word' | 'letter'): string[] {\n  return by === 'word' ? text.split(/(\\s+)/).filter(Boolean) : Array.from(text);\n}\n\nconst piece: Variants = {\n  hidden: { opacity: 0, y: '0.4em', filter: 'blur(6px)' },\n  visible: { opacity: 1, y: 0, filter: 'blur(0px)' },\n};\n\n/** Text that blurs and rises into place one word or letter at a time. */\nexport function TextReveal({\n  text,\n  by = 'word',\n  as: Tag = 'p',\n  stagger = by === 'word' ? 0.06 : 0.02,\n  delay = 0,\n  repeat = false,\n  className,\n}: TextRevealProps) {\n  const reduced = useReducedMotion();\n  if (reduced) return <Tag className={className}>{text}</Tag>;\n\n  return (\n    <Tag className={className}>\n      <span className=\"sr-only\">{text}</span>\n      <motion.span\n        aria-hidden\n        className=\"inline\"\n        initial=\"hidden\"\n        whileInView=\"visible\"\n        viewport={{ once: !repeat, amount: 0.6 }}\n        transition={{ staggerChildren: stagger, delayChildren: delay }}\n      >\n        {splitText(text, by).map((part, index) =>\n          /^\\s+$/.test(part) ? (\n            <span key={index}>{part}</span>\n          ) : (\n            <motion.span\n              key={index}\n              variants={piece}\n              transition={{ type: 'spring', stiffness: 260, damping: 26 }}\n              className=\"inline-block whitespace-pre\"\n            >\n              {part}\n            </motion.span>\n          ),\n        )}\n      </motion.span>\n    </Tag>\n  );\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-reduced-motion",
+  "type": "registry:hook",
+  "title": "useReducedMotion",
+  "description": "Reduced-motion check that respects MotionConfig.",
+  "dependencies": [
+    "motion@^12.42.2"
+  ],
+  "files": [
+    {
+      "path": "registry/hooks/use-reduced-motion.ts",
+      "type": "registry:hook",
+      "content": "import { useReducedMotionConfig } from 'motion/react';\n\n/**\n * True when motion should be reduced: the user's OS setting, or a\n * <MotionConfig reducedMotion=\"always\" | \"never\"> override from the app.\n */\nexport function useReducedMotion(): boolean {\n  return Boolean(useReducedMotionConfig());\n}\n"
+    }
+  ]
+}

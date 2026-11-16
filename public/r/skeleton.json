@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "type": "registry:ui",
+  "title": "Skeleton",
+  "description": "Shimmering loading placeholder.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/skeleton.tsx",
+      "type": "registry:ui",
+      "content": "import { cn } from '@/lib/cn';\nimport type { ComponentProps } from 'react';\n\n/** Loading placeholder with a shimmer sweep (static when motion is reduced). */\nexport function Skeleton({ className, ...props }: ComponentProps<'div'>) {\n  return (\n    <div\n      data-slot=\"skeleton\"\n      aria-hidden\n      className={cn(\n        'rounded-md bg-muted bg-[linear-gradient(90deg,transparent_25%,color-mix(in_oklab,var(--color-foreground)_8%,transparent)_50%,transparent_75%)]',\n        'animate-shimmer bg-size-[200%_100%] motion-reduce:animate-none',\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n"
+    }
+  ]
+}

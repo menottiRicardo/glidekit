@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "title": "Popover",
+  "description": "Floating panel anchored to a trigger.",
+  "dependencies": [
+    "@zag-js/popover@^1.42.0",
+    "@zag-js/react@^1.42.0",
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/cn.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/motion.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/props.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/recipes.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/slot.json",
+    "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r/use-preset.json"
+  ],
+  "files": [
+    {
+      "path": "registry/ui/popover.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { cn } from '@/lib/cn';\nimport { popIn } from '@/lib/motion';\nimport { forMotion } from '@/lib/props';\nimport { floatingSurface } from '@/lib/recipes';\nimport { usePreset } from '@/hooks/use-preset';\nimport { Slot } from '@/components/ui/slot';\nimport * as popover from '@zag-js/popover';\nimport { mergeProps, normalizeProps, Portal, useMachine } from '@zag-js/react';\nimport { AnimatePresence, motion } from 'motion/react';\nimport { createContext, useContext, useId, type ComponentProps, type ReactNode } from 'react';\n\ntype PopoverApi = ReturnType<typeof popover.connect>;\nconst PopoverContext = createContext<PopoverApi | null>(null);\n\nexport function usePopover(): PopoverApi {\n  const api = useContext(PopoverContext);\n  if (!api) throw new Error('Popover parts must be used inside <Popover>.');\n  return api;\n}\n\nexport interface PopoverProps extends Omit<popover.Props, 'id' | 'ids' | 'dir' | 'getRootNode'> {\n  children: ReactNode;\n}\n\nexport function Popover({ children, positioning, ...props }: PopoverProps) {\n  const service = useMachine(popover.machine, {\n    id: useId(),\n    positioning: { placement: 'bottom', gutter: 8, ...positioning },\n    ...props,\n  });\n  const api = popover.connect(service, normalizeProps);\n  return <PopoverContext.Provider value={api}>{children}</PopoverContext.Provider>;\n}\n\nexport interface PopoverTriggerProps extends ComponentProps<'button'> {\n  asChild?: boolean;\n}\n\nexport function PopoverTrigger({ asChild, ...props }: PopoverTriggerProps) {\n  const api = usePopover();\n  const Comp = asChild ? Slot : 'button';\n  return <Comp data-slot=\"popover-trigger\" {...mergeProps(api.getTriggerProps(), props)} />;\n}\n\nexport interface PopoverContentProps {\n  children: ReactNode;\n  className?: string;\n}\n\nexport function PopoverContent({ children, className }: PopoverContentProps) {\n  const api = usePopover();\n  const preset = usePreset(popIn);\n  const content = (\n    <div {...api.getPositionerProps()}>\n      <AnimatePresence>\n        {api.open && (\n          <motion.div\n            data-slot=\"popover-content\"\n            {...forMotion(api.getContentProps())}\n            {...preset}\n            style={{ transformOrigin: 'var(--transform-origin)' }}\n            className={cn(floatingSurface, 'w-72 p-4', className)}\n          >\n            {children}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n  return api.portalled ? <Portal>{content}</Portal> : content;\n}\n\nexport function PopoverTitle({ className, ...props }: ComponentProps<'h3'>) {\n  const api = usePopover();\n  return <h3 {...api.getTitleProps()} className={cn('font-semibold', className)} {...props} />;\n}\n\nexport function PopoverDescription({ className, ...props }: ComponentProps<'p'>) {\n  const api = usePopover();\n  return (\n    <p\n      {...api.getDescriptionProps()}\n      className={cn('text-sm text-muted-foreground', className)}\n      {...props}\n    />\n  );\n}\n\nexport function PopoverClose({ asChild, ...props }: PopoverTriggerProps) {\n  const api = usePopover();\n  const Comp = asChild ? Slot : 'button';\n  return <Comp {...mergeProps(api.getCloseTriggerProps(), props)} />;\n}\n"
+    }
+  ]
+}
