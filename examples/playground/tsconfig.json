@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "paths": {
+      "@/lib/*": ["../../registry/lib/*"],
+      "@/hooks/*": ["../../registry/hooks/*"],
+      "@/components/ui/*": ["../../registry/ui/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@import '../../../registry/theme/theme.css';
+
+/* The components live outside this app's folder. */
+@source '../../../registry';
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  font-family:
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
