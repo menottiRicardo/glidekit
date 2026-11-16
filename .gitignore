@@ -1,7 +1,28 @@
-node_modules
-dist
-coverage
+# Dependencies
+node_modules/
+.pnpm-store/
+venv/
+.venv/
+ven/
+
+# Caches
+__pycache__/
+.cache/
+.vite/
+.turbo/
+.eslintcache
+*.tsbuildinfo
+
+# Build and test output (never source code)
+dist/
+build/
+out/
+coverage/
+
+# Logs and OS files
 *.log
 .DS_Store
+
+# Local secrets
 .env
 .env.*
