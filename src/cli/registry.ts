@@ -25,23 +25,13 @@ export interface RegistryIndex {
   items: Omit<RegistryItem, 'files'>[];
 }
 
-const isUrl = (value: string) => /^https?:\/\//.test(value);
-
-/** "dialog", "dialog.json" or a full item URL → "dialog". */
+/** "dialog" or "dialog.json" → "dialog". */
 export function itemName(ref: string): string {
   const last = ref.split('/').pop() ?? ref;
   return last.replace(/\.json$/, '');
 }
 
 async function load<T>(registry: string, file: string, cwd: string): Promise<T> {
-  if (isUrl(registry)) {
-    const url = `${registry.replace(/\/$/, '')}/${file}`;
-    const response = await fetch(url);
-    if (response.status === 404)
-      throw new Error(`Not found in the registry: ${file.replace(/\.json$/, '')}`);
-    if (!response.ok) throw new Error(`Registry request failed (${response.status}): ${url}`);
-    return (await response.json()) as T;
-  }
   const dir = isAbsolute(registry) ? registry : resolve(cwd, registry);
   try {
     return JSON.parse(await readFile(join(dir, file), 'utf8')) as T;
@@ -63,7 +53,7 @@ export function fetchIndex(registry: string, cwd: string): Promise<RegistryIndex
   return load<RegistryIndex>(registry, 'index.json', cwd);
 }
 
-/** Fetches the requested items plus everything they depend on, dependencies first. */
+/** Loads the requested items plus everything they depend on, dependencies first. */
 export async function resolveTree(
   registry: string,
   names: string[],

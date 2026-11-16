@@ -1,8 +1,12 @@
 # CLI
 
 ```bash
+npm install --save-dev glidekit
 npx glidekit <command>
 ```
+
+Every component ships inside the package, so the CLI works offline: the only network access is
+your package manager installing from the npm registry (or your mirror of it).
 
 ## init
 
@@ -14,12 +18,12 @@ Sets up a project. Run it once from the folder that has your `package.json`.
 3. Adds `lib/cn.ts` and installs `clsx` and `tailwind-merge`.
 4. Saves `glidekit.json`.
 
-| Option             | Description                                         |
-| ------------------ | --------------------------------------------------- |
-| `--css <path>`     | Stylesheet to use when it can't be detected.        |
-| `--registry <url>` | Registry URL or a local folder of item JSON files.  |
-| `-f, --force`      | Replace an existing `glidekit.json` and theme file. |
-| `--no-install`     | Print the dependencies instead of installing them.  |
+| Option             | Description                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| `--css <path>`     | Stylesheet to use when it can't be detected.                  |
+| `--registry <dir>` | Copy from a local registry folder instead of the bundled one. |
+| `-f, --force`      | Replace an existing `glidekit.json` and theme file.           |
+| `--no-install`     | Print the dependencies instead of installing them.            |
 
 Running `init` again is safe: existing config is kept and the CSS import is never duplicated.
 
@@ -29,7 +33,7 @@ Running `init` again is safe: existing config is kept and the CSS import is neve
 npx glidekit add dialog tabs
 ```
 
-Copies the components plus everything they import from the registry (helpers in `lib/`, hooks,
+Copies the components plus everything they import from the package (helpers in `lib/`, hooks,
 and other components, such as `slot` for `asChild`). Imports are rewritten to your aliases.
 Missing npm packages are installed with the package manager your lockfile points to (pnpm, yarn,
 bun or npm).
@@ -54,14 +58,13 @@ Shows every component with a one-line description.
 npx glidekit diff tabs
 ```
 
-Compares your copy with the registry version. Lines starting with `-` exist only in your file,
-`+` only in the registry. Exits with code 1 when they differ, so it can run in CI.
+Compares your copy with the version in the installed glidekit package. Lines starting with `-` exist only in your file,
+`+` only in the package. Exits with code 1 when they differ, so it can run in CI.
 
 ## glidekit.json
 
 ```json
 {
-  "registry": "https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r",
   "css": "src/index.css",
   "aliases": { "ui": "@/components/ui", "lib": "@/lib", "hooks": "@/hooks" },
   "paths": { "ui": "src/components/ui", "lib": "src/lib", "hooks": "src/hooks" }
@@ -70,4 +73,5 @@ Compares your copy with the registry version. Lines starting with `-` exist only
 
 - `aliases` are written into imports; `paths` are where files go. Both are derived from the
   `@/*`-style alias in `tsconfig.json` or `tsconfig.app.json` (any prefix works, e.g. `~/*`).
-- `registry` can point to a fork or a local folder.
+- `registry` (optional) points at a local registry folder, e.g. a fork built with
+  `pnpm build`. Without it, components come from the installed package.

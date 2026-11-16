@@ -1,9 +1,17 @@
 // @vitest-environment node
+import { writeRegistry } from '../../scripts/build-registry';
 import { add } from '../../src/cli/commands/add';
 import { diff } from '../../src/cli/commands/diff';
 import { init } from '../../src/cli/commands/init';
 import { list } from '../../src/cli/commands/list';
-import { detectAliasRoot, detectCss, readConfig } from '../../src/cli/config';
+import {
+  bundledRegistry,
+  defaultConfig,
+  detectAliasRoot,
+  detectCss,
+  readConfig,
+  registryFor,
+} from '../../src/cli/config';
 import type { Logger } from '../../src/cli/logger';
 import { detectPackageManager, installCommand, missingDependencies } from '../../src/cli/project';
 import { collectDependencies, itemName, resolveTree } from '../../src/cli/registry';
@@ -11,9 +19,10 @@ import { diffLines, injectCssImport, rewriteImports } from '../../src/cli/transf
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const registry = fileURLToPath(new URL('../../public/r', import.meta.url));
+// The same registry the npm package ships, built fresh for these tests.
+const registry = mkdtempSync(join(tmpdir(), 'glidekit-registry-'));
+writeRegistry(registry);
 const silent: Logger = { info() {}, success() {}, warn() {}, error() {} };
 const dirs: string[] = [];
 
@@ -51,6 +60,7 @@ function nextApp() {
 const read = (dir: string, path: string) => readFileSync(join(dir, path), 'utf8');
 
 afterAll(() => {
+  rmSync(registry, { recursive: true, force: true });
   for (const dir of dirs) rmSync(dir, { recursive: true, force: true });
 });
 
@@ -207,7 +217,20 @@ describe('helpers', () => {
 
   it('normalizes item references', () => {
     expect(itemName('dialog')).toBe('dialog');
-    expect(itemName('https://example.com/r/use-preset.json')).toBe('use-preset');
+    expect(itemName('use-preset.json')).toBe('use-preset');
+  });
+
+  it('uses the registry bundled in the package unless told otherwise', () => {
+    expect(bundledRegistry()).toMatch(/[\\/]registry$/);
+    expect(registryFor(null)).toBe(bundledRegistry());
+    expect(registryFor({ registry: 'vendor/r' })).toBe('vendor/r');
+    expect(registryFor({ registry: 'vendor/r' }, 'other')).toBe('other');
+  });
+
+  it('only stores a registry folder in glidekit.json when one is given', () => {
+    const dir = viteApp();
+    expect(defaultConfig(dir, 'src/index.css')).not.toHaveProperty('registry');
+    expect(defaultConfig(dir, 'src/index.css', 'vendor/r').registry).toBe('vendor/r');
   });
 
   it('rewrites only the aliases that differ', () => {

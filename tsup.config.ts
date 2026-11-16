@@ -9,4 +9,6 @@ export default defineConfig({
   sourcemap: true,
   banner: { js: '#!/usr/bin/env node' },
   dts: false,
+  // Bundle the CLI's own libraries so the package has no runtime dependencies.
+  noExternal: ['commander', 'picocolors'],
 });

@@ -1,9 +1,21 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const CONFIG_FILE = 'glidekit.json';
-export const DEFAULT_REGISTRY =
-  'https://raw.githubusercontent.com/menottiRicardo/glidekit/main/public/r';
+
+/**
+ * The registry that ships inside the npm package (dist/registry, next to the
+ * built CLI). Components are copied from here, so nothing is downloaded.
+ */
+export function bundledRegistry(): string {
+  return fileURLToPath(new URL('./registry', import.meta.url));
+}
+
+/** An explicit folder wins, then glidekit.json, then the bundled registry. */
+export function registryFor(config: Pick<Config, 'registry'> | null, override?: string): string {
+  return override ?? config?.registry ?? bundledRegistry();
+}
 
 export interface Aliases {
   ui: string;
@@ -12,8 +24,8 @@ export interface Aliases {
 }
 
 export interface Config {
-  /** Registry base URL, or a local folder of item JSON files. */
-  registry: string;
+  /** Optional local folder of registry items; defaults to the one in the package. */
+  registry?: string;
   /** The CSS file that imports Tailwind; glidekit.css is written next to it. */
   css: string;
   /** Import aliases written into component source. */
@@ -64,11 +76,11 @@ export function detectAliasRoot(cwd: string): { prefix: string; dir: string } {
   return { prefix: '@', dir: existsSync(join(cwd, 'src')) ? 'src' : '.' };
 }
 
-export function defaultConfig(cwd: string, css: string, registry = DEFAULT_REGISTRY): Config {
+export function defaultConfig(cwd: string, css: string, registry?: string): Config {
   const { prefix, dir } = detectAliasRoot(cwd);
   const path = (sub: string) => (dir === '.' ? sub : `${dir}/${sub}`);
   return {
-    registry,
+    ...(registry ? { registry } : {}),
     css,
     aliases: { ui: `${prefix}/components/ui`, lib: `${prefix}/lib`, hooks: `${prefix}/hooks` },
     paths: { ui: path('components/ui'), lib: path('lib'), hooks: path('hooks') },

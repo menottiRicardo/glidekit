@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import pc from 'picocolors';
-import { readConfig } from '../config';
+import { readConfig, registryFor } from '../config';
 import { consoleLogger, type Logger } from '../logger';
 import { fetchItem } from '../registry';
 import { diffLines, rewriteImports } from '../transform';
@@ -22,7 +22,7 @@ export async function diff(
   const config = readConfig(options.cwd);
   if (!config) throw new Error('No glidekit.json found. Run `glidekit init` first.');
 
-  const item = await fetchItem(config.registry, name, options.cwd);
+  const item = await fetchItem(registryFor(config), name, options.cwd);
   const results: DiffResult[] = [];
   for (const file of item.files) {
     const rel = targetPath(config, file);

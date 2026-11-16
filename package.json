@@ -30,9 +30,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup && pnpm registry:build",
+    "build": "tsup && tsx scripts/build-registry.ts",
     "registry:build": "tsx scripts/build-registry.ts",
-    "registry:check": "tsx scripts/build-registry.ts --check",
     "typecheck": "tsc --noEmit && tsc --noEmit -p examples/playground",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -41,14 +40,6 @@
     "test:watch": "vitest",
     "example": "vite examples/playground",
     "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
-  },
-  "dependencies": {
-    "commander": "15.0.0",
-    "picocolors": "1.1.1"
-  },
-  "packageManager": "pnpm@11.9.0",
-  "engines": {
-    "node": ">=20"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -79,11 +70,13 @@
     "axe-core": "4.12.1",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
+    "commander": "15.0.0",
     "eslint": "10.6.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.7.0",
     "jsdom": "29.1.1",
     "motion": "12.42.2",
+    "picocolors": "1.1.1",
     "prettier": "3.9.4",
     "react": "19.2.7",
     "react-dom": "19.2.7",
@@ -95,5 +88,9 @@
     "typescript-eslint": "8.62.1",
     "vite": "8.1.2",
     "vitest": "4.1.9"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20"
   }
 }

@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
-import { readConfig, type Config } from '../config';
+import { readConfig, registryFor, type Config } from '../config';
 import { confirm as askUser, consoleLogger, type Logger } from '../logger';
 import { install, missingDependencies } from '../project';
 import {
@@ -95,7 +95,7 @@ export async function add(names: string[], options: AddOptions): Promise<AddResu
   if (names.length === 0)
     throw new Error('Name at least one component, e.g. `glidekit add button`.');
 
-  const items = await resolveTree(config.registry, names, options.cwd);
+  const items = await resolveTree(registryFor(config), names, options.cwd);
   const { written, skipped } = await writeItems(items, config, options);
   const dependencies = missingDependencies(options.cwd, collectDependencies(items));
 

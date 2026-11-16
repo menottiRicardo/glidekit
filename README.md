@@ -1,8 +1,8 @@
 # glidekit
 
 Animated, accessible React components built with **Tailwind CSS v4**, **Motion** and **Zag.js**.
-You don't install glidekit as a dependency. A small CLI copies each component's source into your
-app, so you own the code and can change anything.
+The `glidekit` package contains every component and a small CLI that copies their source into
+your app, so you own the code and can change anything.
 
 - **Motion everywhere, done carefully.** Springs, shared-layout indicators, drawn checkmarks,
   drag-to-close drawers and staggered menus, all from one file of presets you can tune.
@@ -13,14 +13,20 @@ app, so you own the code and can change anything.
   movement is removed and only short fades remain.
 - **Themeable with CSS variables.** Light and dark tokens in one stylesheet; restyle by
   overriding a few variables or editing the copied classes.
+- **Only needs the npm registry.** Components ship inside the package and the CLI never goes
+  online, so it works behind firewalls and mirrors that allow npm and nothing else.
 
 ## Quick start
 
 Requirements: React 18 or newer, Tailwind CSS v4, and a TypeScript path alias such as `@/*`.
 
 ```bash
+npm install --save-dev glidekit
 npx glidekit init
 ```
+
+Installing it as a dev dependency pins the version, so every teammate and CI run copies the
+same components. Upgrading is `npm install --save-dev glidekit@latest`, then `glidekit diff`.
 
 `init` finds the stylesheet that imports Tailwind, writes `glidekit.css` (theme tokens) next to
 it, imports it, adds the `cn` helper and saves your settings to `glidekit.json`.
@@ -30,7 +36,8 @@ npx glidekit add button dialog tabs toast
 ```
 
 `add` copies the components, everything they depend on (helpers, hooks, other components) and
-installs their npm packages with your package manager.
+installs their npm packages with your package manager. Those packages (Motion, Zag.js, clsx,
+tailwind-merge, class-variance-authority) come from the npm registry like any other dependency.
 
 ```tsx
 import { Button } from '@/components/ui/button';
@@ -88,11 +95,11 @@ Options and configuration: [docs/cli.md](docs/cli.md).
 pnpm install
 pnpm example        # playground with every component
 pnpm test           # component, CLI and accessibility tests
-pnpm registry:build # rebuild public/r after changing registry/
+pnpm build          # CLI plus the bundled registry in dist/
 ```
 
-The component source lives in `registry/` (`ui/`, `lib/`, `hooks/`, `theme/`). The registry JSON
-in `public/r` is generated from it, and CI fails if the two drift apart.
+The component source lives in `registry/` (`ui/`, `lib/`, `hooks/`, `theme/`). `pnpm build`
+turns it into `dist/registry`, which ships in the npm package next to the CLI.
 
 ## License
 

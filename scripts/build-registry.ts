@@ -1,14 +1,14 @@
 /**
- * Builds the component registry from the source in registry/.
+ * Builds the component registry that ships inside the npm package.
  *
- *   public/r/index.json   every item without file contents (used by `glidekit list`)
- *   public/r/<name>.json  one item per component, with file contents inlined
+ *   dist/registry/index.json   every item without file contents (used by `glidekit list`)
+ *   dist/registry/<name>.json  one item per component, with file contents inlined
  *
  * npm dependencies and registry dependencies are read from each file's imports,
- * so they can never drift from the code. `--check` fails if the output is stale.
+ * so they can never drift from the code. Pass `--out <dir>` to write elsewhere.
  */
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import { basename, extname, join } from 'node:path';
+import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { basename, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { meta } from './registry-meta';
 
@@ -127,36 +127,33 @@ export function render(items: RegistryItem[]): Map<string, string> {
   const out = new Map<string, string>();
   const index = {
     name: 'glidekit',
-    homepage: 'https://github.com/menottiRicardo/glidekit',
     items: items.map(({ files, ...item }) => ({
       ...item,
       files: files.map(({ content: _content, ...file }) => file),
     })),
   };
-  out.set('public/r/index.json', stringify(index));
-  for (const item of items) out.set(`public/r/${item.name}.json`, stringify(item));
+  out.set('index.json', stringify(index));
+  for (const item of items) out.set(`${item.name}.json`, stringify(item));
   return out;
 }
 
-function main() {
-  const check = process.argv.includes('--check');
+/** Writes a fresh registry into `dir`, replacing whatever was there. */
+export function writeRegistry(dir: string): number {
   const outputs = render(buildItems());
-  const stale: string[] = [];
-  for (const [file, content] of outputs) {
-    const path = join(root, file);
-    const current = existsSync(path) ? readFileSync(path, 'utf8') : null;
-    if (current === content) continue;
-    if (check) stale.push(file);
-    else {
-      mkdirSync(join(path, '..'), { recursive: true });
-      writeFileSync(path, content);
-    }
-  }
-  if (check && stale.length) {
-    console.error(`Registry is out of date. Run \`pnpm registry:build\`.\n  ${stale.join('\n  ')}`);
-    process.exit(1);
-  }
-  console.log(check ? 'Registry is up to date.' : `Registry built: ${outputs.size - 1} items.`);
+  rmSync(dir, { recursive: true, force: true });
+  mkdirSync(dir, { recursive: true });
+  for (const [file, content] of outputs) writeFileSync(join(dir, file), content);
+  return outputs.size - 1;
+}
+
+function main() {
+  const flag = process.argv.indexOf('--out');
+  const dir =
+    flag > 0 && process.argv[flag + 1]
+      ? resolve(process.argv[flag + 1]!)
+      : join(root, 'dist/registry');
+  const count = writeRegistry(dir);
+  console.log(`Registry built: ${count} items in ${dir}`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main();

@@ -15,7 +15,7 @@ program
   .command('init')
   .description('Set up glidekit: config, theme tokens and the cn helper.')
   .option('--css <path>', 'stylesheet that imports Tailwind')
-  .option('--registry <url>', 'registry URL or local folder')
+  .option('--registry <dir>', 'use a local registry folder instead of the bundled one')
   .option('-f, --force', 'replace an existing glidekit.json and theme')
   .option('--no-install', 'skip installing dependencies')
   .action(async (opts) => {
@@ -38,7 +38,7 @@ program
 program
   .command('list')
   .description('Show the available components.')
-  .option('--registry <url>', 'registry URL or local folder')
+  .option('--registry <dir>', 'use a local registry folder instead of the bundled one')
   .action(async (opts) => {
     await list({ cwd: process.cwd(), ...opts });
   });

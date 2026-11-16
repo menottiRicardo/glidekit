@@ -1,10 +1,10 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  DEFAULT_REGISTRY,
   defaultConfig,
   detectCss,
   readConfig,
+  registryFor,
   writeConfig,
   type Config,
 } from '../config';
@@ -49,14 +49,11 @@ export async function init(options: InitOptions): Promise<Config> {
   }
   if (!existsSync(join(cwd, css))) throw new Error(`CSS file not found: ${css}`);
 
-  const config =
-    existing && !options.force
-      ? existing
-      : defaultConfig(cwd, css, options.registry ?? DEFAULT_REGISTRY);
+  const config = existing && !options.force ? existing : defaultConfig(cwd, css, options.registry);
   writeConfig(cwd, config);
   logger.success('Wrote glidekit.json');
 
-  const items = await resolveTree(config.registry, ['theme', 'cn'], cwd);
+  const items = await resolveTree(registryFor(config), ['theme', 'cn'], cwd);
   const { written } = await writeItems(items, config, { ...options, overwrite: options.force });
   for (const file of written) logger.success(`Wrote ${file}`);
 
