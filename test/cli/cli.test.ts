@@ -18,11 +18,14 @@ import { collectDependencies, itemName, resolveTree } from '../../src/cli/regist
 import { diffLines, injectCssImport, rewriteImports } from '../../src/cli/transform';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { devDependencies } from '../../package.json';
 import { dirname, join } from 'node:path';
 
 // The same registry the npm package ships, built fresh for these tests.
 const registry = mkdtempSync(join(tmpdir(), 'glidekit-registry-'));
 writeRegistry(registry);
+// Ranges the registry writes for npm packages come from package.json.
+const range = (name: string) => `${name}@^${(devDependencies as Record<string, string>)[name]}`;
 const silent: Logger = { info() {}, success() {}, warn() {}, error() {} };
 const dirs: string[] = [];
 
@@ -123,13 +126,9 @@ describe('add', () => {
     expect(drawer).toContain("from '~/components/ui/dialog'");
     expect(drawer).toContain("from '~/lib/cn'");
     expect(drawer).not.toContain('@/');
-    expect(result.dependencies).toEqual([
-      '@zag-js/dialog@^1.42.0',
-      '@zag-js/react@^1.42.0',
-      'clsx@^2.1.1',
-      'motion@^12.42.2',
-      'tailwind-merge@^3.6.0',
-    ]);
+    expect(result.dependencies).toEqual(
+      ['@zag-js/dialog', '@zag-js/react', 'clsx', 'motion', 'tailwind-merge'].map(range),
+    );
   });
 
   it('keeps local edits unless asked to overwrite', async () => {
@@ -212,7 +211,7 @@ describe('helpers', () => {
     expect(new Set(names).size).toBe(names.length);
     expect(names.indexOf('dialog')).toBeLessThan(names.indexOf('drawer'));
     expect(names.indexOf('cn')).toBeLessThan(names.indexOf('dialog'));
-    expect(collectDependencies(items)).toContain('@zag-js/dialog@^1.42.0');
+    expect(collectDependencies(items)).toContain(range('@zag-js/dialog'));
   });
 
   it('normalizes item references', () => {

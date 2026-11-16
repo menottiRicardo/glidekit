@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { devDependencies } from '../../package.json';
 import { analyzeImports, buildItems } from '../../scripts/build-registry';
 
 describe('registry build', () => {
@@ -24,11 +25,11 @@ describe('registry build', () => {
       expect.arrayContaining(['button', 'dialog', 'cn', 'use-preset', 'theme']),
     );
     const dialog = items.find((item) => item.name === 'dialog')!;
-    expect(dialog.dependencies).toEqual([
-      '@zag-js/dialog@^1.42.0',
-      '@zag-js/react@^1.42.0',
-      'motion@^12.42.2',
-    ]);
+    expect(dialog.dependencies).toEqual(
+      ['@zag-js/dialog', '@zag-js/react', 'motion'].map(
+        (name) => `${name}@^${devDependencies[name as keyof typeof devDependencies]}`,
+      ),
+    );
     expect(dialog.registryDependencies).toEqual(['cn', 'motion', 'props', 'slot', 'use-preset']);
     for (const item of items) {
       for (const dep of item.registryDependencies ?? []) expect(names).toContain(dep);

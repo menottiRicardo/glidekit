@@ -1,5 +1,10 @@
 allowBuilds:
   esbuild: true
+# Keep transitive packages on April 2026 releases too.
 overrides:
-  framer-motion: 12.42.2
-  motion-dom: 12.42.2
+  framer-motion: 12.38.0
+  motion-dom: 12.38.0
+  motion-utils: 12.36.0
+  '@floating-ui/core': 1.7.5
+  '@floating-ui/dom': 1.7.6
+  '@floating-ui/utils': 0.2.11
